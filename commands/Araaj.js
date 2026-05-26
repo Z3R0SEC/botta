@@ -32,8 +32,7 @@ module.exports = {
       return sendMessage(id, {
         text:
 `Our system detected that youve sent Attachment type ${type} Unfortunately We No longer have support for image viewing. Please Dare to check out our official website to check related products or place and track orders\n\nhttps://standbyclothing.xyz\n\nWhatsapp: +27834493272 .
-
-The new Mota AI API only supports text messages.`
+Try sending me a plain message or ask me any question`
       }, token);
     }
     if (!prompt) {
