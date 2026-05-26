@@ -4,7 +4,7 @@ const { sendMessage } = require('../handles/sendMessage');
 module.exports = {
   name: 'ai',
   description: 'Chat with Mota AI',
-  usage: 'raaj <message>',
+  usage: 'ai <message>',
   author: 'Mota - Dev',
 
   async execute(senderId, args, pageAccessToken, user, attachment = null) {
@@ -22,7 +22,8 @@ module.exports = {
       "What's New Dude?"
     ];
 
-    const fallback = defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
+    const fallback =
+      defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
 
     if (attachment) {
 
@@ -30,29 +31,18 @@ module.exports = {
 
       return sendMessage(id, {
         text:
-`Attachment Support Removed
+`Our system detected that youve sent Attachment type ${type} Unfortunately We No longer have support for image viewing. Please Dare to check out our official website to check related products or place and track orders\n\nhttps://standbyclothing.xyz\n\nWhatsapp: +27834493272 .
 
-Your message included a ${type} attachment.
-
-The new Mota AI API no longer supports:
-• Images
-• Videos
-• Audio
-• Files
-
-Please send text messages only.
-
-For more information visit:
-https://standbyclothing.xyz/shop`
+The new Mota AI API only supports text messages.`
       }, token);
     }
- if (!prompt) {
+    if (!prompt) {
       return sendMessage(id, {
         text: fallback
       }, token);
     }
 
-    const apiUrl = "https://api.motadev.xyz/chat";
+    const apiUrl = 'https://api.motadev.xyz/api/chat';
 
     try {
 
@@ -60,54 +50,71 @@ https://standbyclothing.xyz/shop`
         apiUrl,
         {
           user_id: id,
-          message: prompt
+
+          messages: {
+            system: "You are Mota AI, a smart helpful assistant integrated into Facebook Messenger. Keep replies concise, friendly and conversational.",
+            user: prompt
+          }
         },
         {
           headers: {
             'Content-Type': 'application/json',
-            'user-agent':
-              'motadev-ai/2.0 (platform=messenger; type=bot)'
+
+            'User-Agent':
+              'motadev-ai/3.0 (platform=messenger; type=bot)',
+
+            'X-API-KEY':
+              "mtd_key3656390874YRAU",
+
+            'Referer':
+              'https://standbyclothing.xyz'
           },
+
           timeout: 30000
         }
       );
 
       const res = response.data;
 
-      if (res.reply) {
+      if (res.success) {
+
+        let reply =
+          res.reply ||
+          res.message ||
+          res.response ||
+          "No response received.";
 
         await sendMessage(id, {
-          text: res.reply
+          text: reply
         }, token);
 
       } else {
 
         await sendMessage(id, {
           text:
-`Our AI system is currently experiencing issues.
-
-Please try again shortly.`
+`I had an issue generating response. this might be internal error! Please consider contacting us via whatsapp at +27834493272 or by visiting our website at https://standbyclothing.xyz \n\nFor Development Purposes! Please send us The Following message for our IT Reviews`
         }, token);
-
+        await sendMessage(id, { text: `${res.message || "Catched Unknown Error!"}` }, token);
       }
 
     } catch (error) {
 
       console.error(
-        'Mvest AI Error:',
+        'AI System Offline!\nPlease consider contacting us via WhatsApp at +27834493272 or simply visit our official website to place your order at https://standbyclothing.xyz.\n\n(For Development purpose Please ignore the following message)\n\n',
         error.response?.data || error.message
       );
 
+      let errMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Unknown Error";
+
       await sendMessage(id, {
         text:
-`Mota AI is currently unavailable.
+`AI System Offline!\nPlease consider contacting us via WhatsApp at +27834493272 or simply visit our official website to place your order at https://standbyclothing.xyz.\n\n(For Development purpose Please ignore the following message)\n\n
 
-Please try again later.
-
-System Trace:
-${error.message || "Unknown Error"}
-
-[xaiMotaDevelopersTraceBack]`
+Barrier 🚧 
+${errMsg}`
       }, token);
 
     }
