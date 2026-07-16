@@ -100,13 +100,8 @@ Try sending me a plain message or ask me any question`
         }, token);
 
       } else {
-
-        await sendMessage(id, {
-          text:
-`I had an issue generating response. this might be internal error! Please consider contacting us via whatsapp at +27834493272 or by visiting our website at https://standbyclothing.xyz \n\nFor Development Purposes! Please send us The Following message for our IT Reviews`
-        }, token);
-        await sendMessage(id, { text: `${res.message || "Catched Unknown Error!"}` }, token);
-      }
+          console.log("Error occured!!!");
+         }
 
     } catch (error) {
 
@@ -119,14 +114,6 @@ Try sending me a plain message or ask me any question`
         error.response?.data?.message ||
         error.message ||
         "Unknown Error";
-
-      await sendMessage(id, {
-        text:
-`AI System Offline!\nPlease consider contacting us via WhatsApp at +27834493272 or simply visit our official website to place your order at https://standbyclothing.xyz.\n\n(For Development purpose Please ignore the following message)\n\n
-
-Barrier 🚧 
-${errMsg}`
-      }, token);
 
     }
 
